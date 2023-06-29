@@ -15,27 +15,46 @@ buildscript {
 }
 
 plugins {
-    id "com.github.hierynomus.license"
+    //id "com.github.hierynomus.license"
     id 'maven-publish'
     id 'net.researchgate.release'
     id 'org.springframework.boot'
+    id 'com.google.protobuf' version "0.9.3"
 }
 
-license {
-    header rootProject.file('LICENSE-HEADER-JAVA')
-    exclude "**/banner.txt"
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/protobuf'
+        }
+        java {
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+//license {
+//    header rootProject.file('LICENSE-HEADER-JAVA')
+//    exclude "**/banner.txt"
 //    include "**/*.conf"
-}
+//}
 
-task licenseFormatDockerFiles(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
-    source = fileTree(dir: "src").include("main/docker/files/*")
-}
-licenseFormat.dependsOn licenseFormatDockerFiles
+//task licenseFormatDockerFiles(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
+//    source = fileTree(dir: "src").include("main/docker/files/*")
+//}
+//licenseFormat.dependsOn licenseFormatDockerFiles
 
-task licenseCheckDockerFiles(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
-    source = fileTree(dir: "src").include("main/docker/files/*")
+//task licenseCheckDockerFiles(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
+//    source = fileTree(dir: "src").include("main/docker/files/*")
+//}
+//licenseMain.dependsOn licenseCheckDockerFiles
+
+protobuf {
+  protoc {
+    //artifact = 'com.google.protobuf:protoc:3.23.3'
+    artifact = 'com.google.protobuf:protoc:3.14.0:osx-x86_64'
+  }
 }
-licenseMain.dependsOn licenseCheckDockerFiles
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -211,6 +230,7 @@ dependencies {
     implementation group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.2.19'
     implementation group: 'io.dropwizard.metrics', name: 'metrics-jvm', version: '4.2.19'
     implementation group: 'io.dropwizard.metrics', name: 'metrics-graphite', version: '4.2.19'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.23.3'
     implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     implementation 'org.eclipse.jetty:jetty-server'
 //    implementation 'org.mockito:mockito-core:4.11.0'
